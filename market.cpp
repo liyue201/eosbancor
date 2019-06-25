@@ -1,16 +1,8 @@
-#include "market.hpp"
+#include "exchange.hpp"
+#include <string>
 #include <cmath>
 
-uint128_t name_to_num(string s)
-{
-    uint128_t num = 0;
-    for (auto i = 0; i < s.length(); i++) {
-        num = (num << 8) + s[i];
-    }
-    return num;
-}
-
-asset market::convert_to_exchange(connector& c, const asset& in)
+asset exchange::market::convert_to_exchange(connector& c, const asset& in)
 {
 
     real_type R(supply.amount);
@@ -29,7 +21,7 @@ asset market::convert_to_exchange(connector& c, const asset& in)
     return asset(issued, supply.symbol);
 }
 
-asset market::convert_from_exchange(connector& c, asset in)
+asset exchange::market::convert_from_exchange(connector& c, asset in)
 {
     eosio::check(in.symbol == supply.symbol, "unexpected asset symbol input");
 
@@ -50,7 +42,7 @@ asset market::convert_from_exchange(connector& c, asset in)
     return asset(out, c.balance.symbol);
 }
 
-asset market::convert(const asset& from, const symbol& to)
+asset exchange::market::convert(const asset& from, const symbol& to)
 {
     auto out = from;
     auto sell_symbol = from.symbol;

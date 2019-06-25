@@ -1,5 +1,4 @@
 #include "exchange.hpp"
-#include "market.hpp"
 #include <string>
 
 #define EOS_CONTRACT "eosio.token"_n
@@ -20,6 +19,16 @@ string symbol_to_string(int sym)
     }
     return s;
 }
+
+uint128_t name_to_num(string s)
+{
+    uint128_t num = 0;
+    for (auto i = 0; i < s.length(); i++) {
+        num = (num << 8) + s[i];
+    }
+    return num;
+}
+
 
 exchange::exchange(name self, name first_receiver,
     eosio::datastream<const char*> ds)
