@@ -4,13 +4,12 @@
  */
 
 #pragma once
-#include <eosiolib/eosio.hpp>
-#include <eosiolib/asset.hpp>
-#include <eosiolib/currency.hpp>
+#include <eosio/eosio.hpp>
+#include <eosio/asset.hpp>
+#include <eosio/print.hpp>
 #include <string>
 
-namespace dex
-{
+
 using namespace eosio;
 using std::string;
 using std::vector;
@@ -32,31 +31,33 @@ struct memo_param
   uint64_t limit = 0;
 };
 
-class exchange : public eosio::contract
+CONTRACT exchange : public eosio::contract
 {
 public:
-  exchange(account_name self);
+  using contract::contract;
 
-  void clear_db();
+  exchange(name self, name first_receiver, eosio::datastream<const char*> ds);
 
-  void apply(account_name contract, account_name action);
+  void transfer(name from, name to, asset quantity, string memo);
+
+  [[eosio::action]]
+  void clear();
+
+private:
 
   void parse_memo_param(string memo, memo_param &param);
 
-  void on(const currency::transfer &t, account_name code);
+  void create_market(string market_name, asset eos_amount, name token_contract, asset token_amount);
 
-  void create_market(string market_name, asset eos_amount, account_name token_contract, asset token_amount);
+  void update_market(asset eos_amount, name token_contract, asset token_amount);
 
-  void update_market(asset eos_amount, account_name token_contract, asset token_amount);
+  void open_market(name token_contract, symbol token_symbol, bool open);
 
-  void open_market(account_name token_contract, uint64_t token_symbol, bool open);
+  void buy_token(name payer, const asset &eos_quant, string token_symbol);
 
-  void buy_token(account_name payer, const asset &eos_quant, string token_symbol);
+  void sell_token(name receiver, name token_contract, asset quant);
 
-  void sell_token(account_name receiver, account_name token_contract, asset quant);
+  void add_fee(uint64_t amount, name token_contract, symbol token_symbol);
 
-  void add_fee(uint64_t amount, uint64_t token_contract, uint64_t token_symbol);
-
-  void take_fee(account_name account, int limit = 10);
+  void take_fee(name account, int limit = 10);
 };
-} // namespace dex
