@@ -1,10 +1,9 @@
 #include "exchange.hpp"
-#include <string>
 #include <cmath>
+#include <string>
 
 asset exchange::market::convert_to_exchange(connector& c, const asset& in)
 {
-
     real_type R(supply.amount);
     real_type C(c.balance.amount + in.amount);
     real_type F(c.weight / 1000.0);
@@ -31,7 +30,6 @@ asset exchange::market::convert_from_exchange(connector& c, asset in)
     real_type E(in.amount);
     real_type ONE(1.0);
 
-
     real_type T = C * (std::pow(ONE + E / R, F) - ONE);
 
     int64_t out = int64_t(T);
@@ -42,9 +40,8 @@ asset exchange::market::convert_from_exchange(connector& c, asset in)
     return asset(out, c.balance.symbol);
 }
 
-asset exchange::market::convert(const asset& from, const symbol& to)
+asset exchange::market::convert(asset from, const symbol& to)
 {
-    auto out = from;
     auto sell_symbol = from.symbol;
     auto ex_symbol = supply.symbol;
     auto base_symbol = base.balance.symbol;
@@ -52,17 +49,17 @@ asset exchange::market::convert(const asset& from, const symbol& to)
 
     if (sell_symbol != ex_symbol) {
         if (sell_symbol == base_symbol) {
-            out = convert_to_exchange(base, from);
+            from = convert_to_exchange(base, from);
         } else if (sell_symbol == quote_symbol) {
-            out = convert_to_exchange(quote, from);
+            from = convert_to_exchange(quote, from);
         } else {
             eosio::check(false, "invalid sell");
         }
     } else {
         if (to == base_symbol) {
-            out = convert_from_exchange(base, from);
+            from = convert_from_exchange(base, from);
         } else if (to == quote_symbol) {
-            out = convert_from_exchange(quote, from);
+            from = convert_from_exchange(quote, from);
         } else {
             eosio::check(false, "invalid conversion");
         }
@@ -71,5 +68,5 @@ asset exchange::market::convert(const asset& from, const symbol& to)
     if (to != from.symbol)
         return convert(from, to);
 
-    return out;
+    return from;
 }

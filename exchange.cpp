@@ -29,7 +29,6 @@ uint128_t name_to_num(string s)
     return num;
 }
 
-
 exchange::exchange(name self, name first_receiver,
     eosio::datastream<const char*> ds)
     : contract(self, first_receiver, ds)
@@ -55,8 +54,7 @@ void exchange::transfer(name from, name to, asset quantity, string memo)
         if (param.opt == OPT_CREATE_MARKET) {
             asset eos_quant(param.eos_amount, EOS_SYMBOL);
             asset token_quant(param.token_amount, quantity.symbol);
-            create_market(param.market_name, eos_quant, _first_receiver,
-                token_quant);
+            create_market(param.market_name, eos_quant, _first_receiver, token_quant);
         } else if (param.opt == OPT_OPEN_MARKET) {
             open_market(_first_receiver, quantity.symbol, true);
         } else if (param.opt == OPT_CLOSE_MARKET) {
@@ -80,7 +78,7 @@ void exchange::transfer(name from, name to, asset quantity, string memo)
 
 void exchange::clear()
 {
-    require_auth(_self);
+    require_auth(name(ADMIN));
 
     markets _market(_self, _self.value);
     for (auto itr = _market.begin(); itr != _market.end();) {
@@ -170,7 +168,7 @@ void exchange::open_market(name token_contract, symbol token_symbol,
 void exchange::buy_token(name payer, const asset& eos_quant, string token_symbol_string)
 {
     eosio::check(eos_quant.amount >= 1000, "at least 0.1 EOS");
-    eosio::check(eos_quant.symbol == EOS_SYMBOL,  "eos_quant symbol must be EOS");
+    eosio::check(eos_quant.symbol == EOS_SYMBOL, "eos_quant symbol must be EOS");
     eosio::check(token_symbol_string.length() >= 3 && token_symbol_string.length() <= 8, "invalid token_symbol_string");
 
     markets _market(_self, _self.value);

@@ -83,7 +83,7 @@ private:
 
         asset convert_to_exchange(connector & c, const asset& in);
         asset convert_from_exchange(connector & c, asset in);
-        asset convert(const asset& from, const symbol& to);
+        asset convert(asset from, const symbol& to);
 
         EOSLIB_SERIALIZE(market, (id)(idxkey)(market_name)(supply)(open)(base)(quote))
     };
