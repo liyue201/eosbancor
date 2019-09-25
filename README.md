@@ -1,5 +1,5 @@
-# Eos Bancor
- Eos Bancor是全球首个EOS主链上基于Bancor协议的去中心化交易所，于2018-09-16上线。日活跃用户量曾一度排在[DappRadar](https://dappradar.com/)前十位置。 
+# EOS Bancor
+ EOS Bancor是全球首个EOS主链上基于Bancor协议的去中心化交易所，于2018-09-16上线。日活跃用户量曾一度排在[DappRadar](https://dappradar.com/)前十位置。 
 现因其已完成历史使命，大部分代币已经下架，故将智能合约开源。前端页面只是用来展示数据的，可有可无。
 
 交易所地址:   http://eosbancor.top ， 需翻墙，目前显示的只是个demo。  
